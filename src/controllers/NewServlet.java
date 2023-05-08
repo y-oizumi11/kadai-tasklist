@@ -1,7 +1,7 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
+import java.sql.Timestamp;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -13,19 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import models.Tasks;
 import utils.DBUtil;
 
-
-
 /**
- * Servlet implementation class IndexServlet
+ * Servlet implementation class NewServlet
  */
-@WebServlet("/index")
-public class IndexServlet extends HttpServlet {
+@WebServlet("/new")
+public class NewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public IndexServlet() {
+    public NewServlet() {
         super();
     }
 
@@ -34,12 +32,24 @@ public class IndexServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
+        em.getTransaction().begin();
 
-        List<Tasks> tasks = em.createNamedQuery("getAllTasks", Tasks.class).getResultList();
-        response.getWriter().append(Integer.valueOf(tasks.size()).toString());
+        Tasks t = new Tasks();
 
+        //確認用、あとで削除
+        String content = "メールをチェックする";
+        t.setContent(content);
+
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        t.setCreated_at(currentTime);
+        t.setUpdated_at(currentTime);
+
+        em.persist(t);
+        em.getTransaction().commit();
+
+        response.getWriter().append(Integer.valueOf(t.getId()).toString());
         em.close();
 
+    }
 
-}
 }
