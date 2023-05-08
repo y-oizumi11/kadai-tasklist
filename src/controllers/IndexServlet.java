@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import models.Tasks;
 import utils.DBUtil;
 
-
-
 /**
  * Servlet implementation class IndexServlet
  */
